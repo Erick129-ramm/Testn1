@@ -33,5 +33,13 @@ def bebidas():
 def carrito():
     return render_template('carrito.html')
 
+@rest.route('/crud')
+def crud():
+    return render_template('crud.html')
+
+@rest.route('/pedidos')
+def pedidos():
+    return render_template('pedidos.html')
+
 if  __name__ == '__main__':
     rest.run()
