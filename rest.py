@@ -1,9 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector as mysqlcon
 
-rest = Flask(__name__)
+dbconect = mysqlcon.connect(host="localhost",user="root", password="",database="restaurante_ing")
 
-db = mysqlcon.connect(host="localhost",user="root", password="",database="restaurante_ing")
+mysql = dbconect.cursor()
+
+rest = Flask(__name__)
 
 
 @rest.route('/')
@@ -33,9 +35,22 @@ def bebidas():
 def carrito():
     return render_template('carrito.html')
 
-@rest.route('/crud')
+@rest.route('/crud', methods =['GET','POST'])
 def crud():
-    return render_template('crud.html')
+    if request.method == 'POST':
+        Nombre = request.form['Nombre']
+        Direccion = request.form['Direccion']
+        Numero = request.form['Numero']
+
+        sql = "INSERT INTO usuarios(Nombre,Direccion,Numero) VALUES(%s,%s,%s)"
+        values = (Nombre, Direccion, Numero)
+
+        mysql.execute(sql, values)
+        dbconect.commit()
+
+        return "Usuario agregado con exito <a href='/crud'>volver</a>"
+    else:
+        return render_template('crud.html')
 
 @rest.route('/pedidos')
 def pedidos():
